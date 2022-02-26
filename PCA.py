@@ -124,3 +124,12 @@ class PCA:
         plt.xlabel("PC1")
         plt.ylabel("PC2")
         plt.show()
+
+if __name__ == '__main__':
+    import numpy as np
+    import pandas as pd
+    import urllib.request 
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as ticker
+    import sklearn #機械学習のライブラリ
+    from sklearn.decomposition import PCA #主成分分析器
