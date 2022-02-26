@@ -1,1 +1,126 @@
-{"cells":[{"cell_type":"code","execution_count":2,"metadata":{"colab":{},"colab_type":"code","executionInfo":{"elapsed":798,"status":"ok","timestamp":1598357764551,"user":{"displayName":"飯村亮祐","photoUrl":"","userId":"06254825650239013045"},"user_tz":-540},"id":"fGNgdaeripA5"},"outputs":[],"source":["# Princple component analysis\n","# quote https://qiita.com/maskot1977/items/082557fcda78c4cdb41f\n","import numpy as np\n","import pandas as pd\n","import urllib.request \n","import matplotlib.pyplot as plt\n","import matplotlib.ticker as ticker\n","import sklearn #機械学習のライブラリ\n","from sklearn.decomposition import PCA #主成分分析器\n","\n","class PCA:\n","    'PCA class'\n","\n","    def __init__(self,dataset):\n","        'initialize the dataset'\n","        self.dataset = dataset\n","\n","    def std(self,colLst):\n","        func = lambda x: (x-x.mean())/x.std()\n","        self.dataset[:,colLst] = self.dataset.loc[:,colLst].apply(func,axis = 0)\n","\n","    def fit(self):\n","        \"\"\"\n","        主成分分析の実行\n","\n","        PCAの引数\n","        • n_components\n","        • 主成分を幾つ求めるか（個数：上の例では2）\n","        • 'mle' を指定すると最尤推定により個数を⾃動的に求める\n","        • 0〜1の間の実数を指定すると累積寄与率がその値になるまで主成分を求める\n","        • whiten\n","        • ⽩⾊化を⾏うかどうか（True|False）\n","        \"\"\"\n","        self.pca = PCA()\n","        self.pca.fit(self.dataset)\n","        # データを主成分空間に写像\n","        self.feature = self.pca.transform(self.dataset)\n","\n","    def score(self):\n","        '''\n","        return the score\n","        主成分得点\n","        '''\n","        return pd.DataFrame(\n","            self.feature\n","            ,columns=[\"PC{}\".format(x + 1) for x in range(len(self.dataset.columns))]\n","            )\n","\n","    def viz2d(self):\n","        \"\"\"\n","        visualize the principal components in 2d\n","        第一主成分と第二主成分でプロットする\n","        この図を使って、主成分の意味付けを行う。\n","        \"\"\"\n","        plt.figure(figsize=(6, 6))\n","        plt.scatter(self.feature[:, 0], self.feature[:, 1], alpha=0.8, c=list(self.datasetd.iloc[:, 0]))\n","        plt.grid()\n","        plt.xlabel(\"PC1\")\n","        plt.ylabel(\"PC2\")\n","        plt.show()\n","\n","    def commit(self):\n","        \"\"\"\n","        寄与率\n","        次元削減する場合は、この寄与率の累積率みて、決めるとよい\n","        \"\"\"\n","        return pd.DataFrame(\n","            self.pca.explained_variance_ratio_\n","            ,index=[\"PC{}\".format(x + 1) for x in range(len(self.dataset.columns))]\n","            )\n","\n","    def vizCommitAccum(self):\n","        '''\n","        累積寄与率を図示する\n","        '''\n","        plt.gca().get_xaxis().set_major_locator(ticker.MaxNLocator(integer=True))\n","        plt.plot([0] + list( np.cumsum(self.pca.explained_variance_ratio_)), \"-o\")\n","        plt.xlabel(\"Number of principal components\")\n","        plt.ylabel(\"Cumulative contribution rate\")\n","        plt.grid()\n","        plt.show()\n","        \n","    def components(self):\n","        \"\"\"\n","        因子負荷量\n","        主成分がどんな方向をもった情報なのかを知るときに使う。\n","        -1から１の値を取る。\n","        負の値を取るのは、主成分が大きくなるときに、その値は小さくなることを示す。\n","        \"\"\"\n","        return pd.DataFrame(\n","            self.pca.components_\n","            ,index=[\"PC{}\".format(x + 1) for x in range(len(self.dataset.columns))]\n","            ,columns = [i for i in self.dataset.columns])\n","\n","    def eigenvalue(self):\n","        '''\n","        PCA の固有値\n","        '''\n","        return pd.DataFrame(\n","            self.pca.explained_variance_\n","            ,index=[\"PC{}\".format(x + 1) for x in range(len(self.dataset.columns))]\n","            )\n","\n","    def eigenvector(self):\n","        '''\n","        PCA の固有ベクトル\n","        '''\n","        return pd.DataFrame(\n","            self.pca.components_\n","            ,columns=self.dataset.columns[1:]\n","            ,index=[\"PC{}\".format(x + 1) for x in range(len(self.dataset.columns))]\n","            )\n","\n","    def vizCommit(self):        \n","        \"\"\"\n","        第一主成分と第二主成分における観測変数の寄与度をプロットする\n","        第一主成分と第二主成分における観測変数の寄与度をプロットすることにより、各成分が何を考慮した値なのかのヒントが得られます。\n","        \"\"\"\n","        plt.figure(figsize=(6, 6))\n","        for x, y, name in zip(self.pca.components_[0], self.pca.components_[1], self.dataset.columns[1:]):\n","            plt.text(x, y, name)\n","        plt.scatter(self.pca.components_[0], self.pca.components_[1], alpha=0.8)\n","        plt.grid()\n","        plt.xlabel(\"PC1\")\n","        plt.ylabel(\"PC2\")\n","        plt.show()"]},{"cell_type":"code","execution_count":null,"metadata":{},"outputs":[],"source":[]}],"metadata":{"colab":{"authorship_tag":"ABX9TyPNjMBQSjXMyf+9OAVL6yIV","collapsed_sections":[],"name":"Untitled11.ipynb","provenance":[]},"kernelspec":{"display_name":"Python 3","name":"python3"}},"nbformat":4,"nbformat_minor":0}
+# Princple component analysis
+# quote https://qiita.com/maskot1977/items/082557fcda78c4cdb41f
+import numpy as np
+import pandas as pd
+import urllib.request 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import sklearn #機械学習のライブラリ
+from sklearn.decomposition import PCA #主成分分析器
+
+class PCA:
+    'PCA class'
+
+    def __init__(self,dataset):
+        'initialize the dataset'
+        self.dataset = dataset
+
+    def std(self,colLst):
+        func = lambda x: (x-x.mean())/x.std()
+        self.dataset[:,colLst] = self.dataset.loc[:,colLst].apply(func,axis = 0)
+
+    def fit(self):
+        """
+        主成分分析の実行
+
+        PCAの引数
+        • n_components
+        • 主成分を幾つ求めるか（個数：上の例では2）
+        • 'mle' を指定すると最尤推定により個数を⾃動的に求める
+        • 0〜1の間の実数を指定すると累積寄与率がその値になるまで主成分を求める
+        • whiten
+        • ⽩⾊化を⾏うかどうか（True|False）
+        """
+        self.pca = PCA()
+        self.pca.fit(self.dataset)
+        # データを主成分空間に写像
+        self.feature = self.pca.transform(self.dataset)
+
+    def score(self):
+        '''
+        return the score
+        主成分得点
+        '''
+        return pd.DataFrame(
+            self.feature
+            ,columns=["PC{}".format(x + 1) for x in range(len(self.dataset.columns))]
+            )
+
+    def viz2d(self):
+        """
+        visualize the principal components in 2d
+        第一主成分と第二主成分でプロットする
+        この図を使って、主成分の意味付けを行う。
+        """
+        plt.figure(figsize=(6, 6))
+        plt.scatter(self.feature[:, 0], self.feature[:, 1], alpha=0.8, c=list(self.datasetd.iloc[:, 0]))
+        plt.grid()
+        plt.xlabel("PC1")
+        plt.ylabel("PC2")
+        plt.show()
+
+    def commit(self):
+        """
+        寄与率
+        次元削減する場合は、この寄与率の累積率みて、決めるとよい
+        """
+        return pd.DataFrame(
+            self.pca.explained_variance_ratio_
+            ,index=["PC{}".format(x + 1) for x in range(len(self.dataset.columns))]
+            )
+
+    def vizCommitAccum(self):
+        '''
+        累積寄与率を図示する
+        '''
+        plt.gca().get_xaxis().set_major_locator(ticker.MaxNLocator(integer=True))
+        plt.plot([0] + list( np.cumsum(self.pca.explained_variance_ratio_)), "-o")
+        plt.xlabel("Number of principal components")
+        plt.ylabel("Cumulative contribution rate")
+        plt.grid()
+        plt.show()
+        
+    def components(self):
+        """
+        因子負荷量
+        主成分がどんな方向をもった情報なのかを知るときに使う。
+        -1から１の値を取る。
+        負の値を取るのは、主成分が大きくなるときに、その値は小さくなることを示す。
+        """
+        return pd.DataFrame(
+            self.pca.components_
+            ,index=["PC{}".format(x + 1) for x in range(len(self.dataset.columns))]
+            ,columns = [i for i in self.dataset.columns])
+
+    def eigenvalue(self):
+        '''
+        PCA の固有値
+        '''
+        return pd.DataFrame(
+            self.pca.explained_variance_
+            ,index=["PC{}".format(x + 1) for x in range(len(self.dataset.columns))]
+            )
+
+    def eigenvector(self):
+        '''
+        PCA の固有ベクトル
+        '''
+        return pd.DataFrame(
+            self.pca.components_
+            ,columns=self.dataset.columns[1:]
+            ,index=["PC{}".format(x + 1) for x in range(len(self.dataset.columns))]
+            )
+
+    def vizCommit(self):        
+        """
+        第一主成分と第二主成分における観測変数の寄与度をプロットする
+        第一主成分と第二主成分における観測変数の寄与度をプロットすることにより、各成分が何を考慮した値なのかのヒントが得られます。
+        """
+        plt.figure(figsize=(6, 6))
+        for x, y, name in zip(self.pca.components_[0], self.pca.components_[1], self.dataset.columns[1:]):
+            plt.text(x, y, name)
+        plt.scatter(self.pca.components_[0], self.pca.components_[1], alpha=0.8)
+        plt.grid()
+        plt.xlabel("PC1")
+        plt.ylabel("PC2")
+        plt.show()
