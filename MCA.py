@@ -57,6 +57,17 @@ class MCA:
         # スコア確認
         result_row5
 
+# MCA
+# n_pc = 8
+# mca = prince.MCA(n_components=n_pc,random_state=40,n_iter =3)
+# mca.fit(family_blood_table)
+# family_blood_reduction = pd.DataFrame(mca.U_,columns = ['pc{}'.format(i+-1) for i in range(n_pc)])
+# sns.barplot(data = horse_profile_combined, x= "owner",y = "wp")
+# grouped_wp = horse_profile_combined[['owner','wp']].groupby('owner').mean()
+# third_parcentile = grouped_wp.describe().iloc[-4,:] # 75%
+# for k in grouped_wp:
+#     print(k)
+
 
 # for debugging
 # index = ['students','workers','households','sum']
